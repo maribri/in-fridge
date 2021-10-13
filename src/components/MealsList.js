@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useSelector, useDispatch, useStore} from 'react-redux';
-import {remove} from '../features/products/productsSlice';
+import {remove} from '../features/meals/mealsSlice';
 import {Portal} from 'react-portal';
-import AddProductForm from './AddProductForm';
-import EditProductForm from './EditProductForm';
+import AddMealForm from './AddMealForm';
+import EditMealForm from './EditMealForm';
 import {SORTING} from '../app/constants';
 
-const Product = styled.div`
+const Meal = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -85,21 +85,21 @@ const Select = styled.select`
   border-radius: 6px;
 `
 
-function ProductsList() {
-  console.log(useStore().getState().products.value)
-  //const products = useStore().getState().products.value;
+function MealsList() {
+  console.log(useStore().getState().meals.value)
+  const meals = useSelector((state) => state.meals.value);
   const products = useSelector((state) => state.products.value);
   const dispatch = useDispatch();
 
   const [addFormOpen, setAddFormOpen] = useState(false);
-  const [editFormOpen, setEditFormOpen] = useState({open: false, product: {}});
+  const [editFormOpen, setEditFormOpen] = useState({open: false, meal: {}});
   const [sorting, setSorting] = useState(SORTING.DATE_DESC);
 
   const handleAdd = () => {
     setAddFormOpen(true);
   }
-  const handleEdit = (product) => {
-    setEditFormOpen({open: true, product});
+  const handleEdit = (meal) => {
+    setEditFormOpen({open: true, meal});
   }
   const handleDelete = (id) => {
     dispatch(remove(id));
@@ -113,7 +113,7 @@ function ProductsList() {
         <option value={SORTING.NAME_DESC}>По названию ↓</option>
         <option value={SORTING.NAME_ASC}>По названию ↑</option>
       </Select>
-      {[...products].sort((a,b)=>{
+      {[...meals].sort((a,b)=>{
         switch (sorting) {
           case SORTING.NAME_DESC:
             return a.name.localeCompare(b.name);
@@ -126,20 +126,30 @@ function ProductsList() {
           default:
             return 0;
         }
-      }).map((product) => {
-        return <Product key={product.id}>
-          <div><small>#{product.id}</small> {product.name} date {product.timeCreate}</div>
-          <Amount>{product.amount}&nbsp;{product.unit !== 'неисчисляемое' ? product.unit : ''}</Amount>
-          <Available>{product.amount ? 'Есть' : 'Нет'}</Available>
-          <ButtonEdit type='button' onClick={()=> handleEdit(product)}>✏️</ButtonEdit>
-          <ButtonDelete type='button' onClick={()=> handleDelete(product.id)}>x</ButtonDelete>
-        </Product>
+      }).map((meal) => {
+        return <Meal key={meal.id}>
+          <div><small>#{meal.id}</small> {meal.name}</div>
+          <Amount>{/*meal.unit !== 'неисчисляемое' ? meal.unit : ''*/}</Amount>
+          <ul>
+            {meal.products.map((product) => <MealProduct product={products.find((item)=> product.id===item.id)} requiredAmount={product.requiredAmount} />)}
+          </ul>
+          <ButtonEdit type='button' onClick={()=> handleEdit(meal)}>✏️</ButtonEdit>
+          <ButtonDelete type='button' onClick={()=> handleDelete(meal.id)}>x</ButtonDelete>
+        </Meal>
       })}
       <ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>
-      {addFormOpen && <Portal><AddProductForm/></Portal>}
-      {editFormOpen.open && <Portal><EditProductForm key={editFormOpen.product.id} product={editFormOpen.product}/></Portal>}
+      {addFormOpen && <Portal><AddMealForm/></Portal>}
+      {editFormOpen.open && <Portal><EditMealForm key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Portal>}
     </React.Fragment>
   );
 }
 
-export default ProductsList;
+function MealProduct(props) {
+  return (
+    <li>
+      #{props.product.id} - {props.product.name}
+    </li>
+  );
+}
+
+export default MealsList;

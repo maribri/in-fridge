@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import findAndReplace from '../../utils/findAndReplace';
 
 const initialState = {
   value: [
     { id: '0', timeCreate: 1632253539470, name: 'Молоко', amount: 1.5, unit: 'л.' },
     { id: '1', timeCreate: 1632253539471, name: 'Хлеб', amount: 500, unit: 'г.' },
+    { id: '2', timeCreate: 1632253539474, name: 'Картофель', amount: 300, unit: 'г.' },
+    { id: '3', timeCreate: 1632253539473, name: 'Помидоры', amount: 800, unit: 'г.' },
   ],
 };
 
@@ -13,13 +16,15 @@ export const productsSlice = createSlice({
   reducers: {
     add: (state, action) => {
       //state.value
+      console.log(state.value)
       return {...state, value: [...state.value, action.payload]}
     },
     edit: (state, action) => {
-      console.log(action.payload);
-      const newList = [...state.value];
-      state.value[0] = action.payload;
-      return false;
+      const newList = findAndReplace(state.value, (item)=> action.payload.id === item.id, action.payload);
+      return { ...state, value: newList };
+
+      //const newList = [...state.value];
+      //state.value[0] = action.payload;
       //return {...state, value: [...state.value, action.payload]}
     },
     remove: (state, action) => {// question
