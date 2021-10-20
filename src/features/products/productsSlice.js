@@ -30,6 +30,12 @@ export const productsSlice = createSlice({
     remove: (state, action) => {// question
       const newList = state.value.filter((item) => item.id !== action.payload);
       return { ...state, value: newList };
+    },
+    clear: (state, action) => {
+      //
+      //storage.removeItem('persist:root')
+      //state = {} as RootState
+      return state;
     }
   }
 });

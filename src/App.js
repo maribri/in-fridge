@@ -25,8 +25,9 @@ const ButtonClear = styled.button`
 `
 
 function App() {
-  const handleClear = (e) => {
+  const handleClear = async (e) => {
     e.preventDefault();
+    //
   }
 
   return (

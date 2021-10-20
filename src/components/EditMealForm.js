@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {edit} from '../features/meals/mealsSlice';
+import IngredientCheck from "./IngredientCheck";
 
 const Form = styled.form`
   max-width: 600px;
@@ -12,15 +13,6 @@ const Form = styled.form`
 const Field = styled.input`
   margin-bottom: 0.8rem;
   padding: 0.3rem;
-`
-const Select = styled.select`
-  margin-bottom: 0.8rem;
-  padding: 0.3rem;
-  min-width: 30%;
-  font-size: 16px;
-  background-color: yellowgreen;
-  border-color: forestgreen;
-  border-radius: 6px;
 `
 const ButtonAdd = styled.button`
   appearance: none;
@@ -33,33 +25,76 @@ const ButtonAdd = styled.button`
   padding: 0.74rem 0;
   font-size: 1.2rem;
 `
+const IngredientsList = styled.ul`
+  max-height: 500px;
+  overflow-y: auto;
+  padding-left: 0;
+`
 
 function EditMealForm(props) {
   const dispatch = useDispatch();
-  console.log(props.meal)
-
+  const products = useSelector((state) => state.products.value);
 
   const [name, setName] = useState(props.meal.name);
-  const [amount, setAmount] = useState(props.meal.amount);
-  const [unit, setUnit] = useState(props.meal.unit);
-  console.log(name)
+  const [productsValue, setProductsValue] = useState(props.meal.products); //{product.id: product.amount}
+
+  let errors = {};
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(edit({ id: props.meal.id, timeCreate:  props.meal.timeCreate, name, amount, unit }));
+    for (const [key, value] of Object.entries(productsValue)) {
+      if (!Number(value)) {
+        //{...errors, id: 'text'}
+        errors[key] = 'Ошибка';
+      }
+    }
+    //console.log(errors)
+    console.log(productsValue)
+
+    const hasErrors = Object.keys(errors).length > 0;
+    if (hasErrors) return;
+
+    dispatch(edit({
+      id: props.meal.id,
+      timeCreate:  props.meal.timeCreate,
+      name,
+      products,
+      //products: Object.entries(productsValue).map((key)=> {
+      //         return {id: key[0], requiredAmount: Number(key[1])};
+      //       })
+    }));
   }
 
   return (
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
-        <h2>Изменить продукт #{props.meal.id} ({props.meal.name})</h2>
-        <Field placeholder='Продукт' value={name} onChange={(e) => setName(e.target.value)} required />
-        <Field placeholder='Количество' value={amount} onChange={(e) => setAmount(e.target.value)} type='number' />
-        <Select value={unit} onChange={(e) => setUnit(e.target.value)}>
-          <option>гр.</option>
-          <option>л.</option>
-          <option>неисчисляемое</option>
-        </Select>
+        <h2>Изменить блюдо #{props.meal.id} ({props.meal.name})</h2>
+        <Field placeholder='Блюдо' value={name} onChange={(e) => setName(e.target.value)} required/>
+        <IngredientsList>
+          {products.map((product) =>
+            {
+              console.log(productsValue[product.id])
+              return (
+                <IngredientCheck
+                  key={product.id}
+                  product={product}
+                  checked={productsValue[product.id] !== undefined}
+                  amountValue={productsValue[product.id] || ''}
+                  errors={Object.keys(errors).indexOf(Number(product.id))}
+                  onAmountChange={(amount)=> {
+                    setProductsValue((productsValue)=> {
+                      return {...productsValue, [product.id]: amount};
+                    })
+                  }}
+                  onToogleCheck={() => {
+                    setProductsValue((productsValue)=> {
+                      return {...productsValue, [product.id]: '0'};
+                    })
+                  }}/>
+              );
+            }
+          )}
+        </IngredientsList>
         <ButtonAdd>Сохранить</ButtonAdd>
       </Form>
     </React.Fragment>

@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {add} from '../features/meals/mealsSlice';
 import {nanoid} from 'nanoid';
-import {Portal} from "react-portal";
-import AddProductForm from "./AddProductForm";
+import IngredientCheck from "./IngredientCheck";
 
 const Form = styled.form`
   max-width: 600px;
@@ -15,15 +14,6 @@ const Form = styled.form`
 const Field = styled.input`
   margin-bottom: 0.8rem;
   padding: 0.3rem;
-`
-const Select = styled.select`
-  margin-bottom: 0.8rem;
-  padding: 0.3rem;
-  min-width: 30%;
-  font-size: 16px;
-  background-color: yellowgreen;
-  border-color: forestgreen;
-  border-radius: 6px;
 `
 const ButtonAdd = styled.button`
   appearance: none;
@@ -41,29 +31,6 @@ const IngredientsList = styled.ul`
   overflow-y: auto;
   padding-left: 0;
 `
-const IngredientRow = styled.li`
-  cursor: pointer;
-  list-style: none;
-  padding: 8px 0 8px 30px;
-  display: flex;
-  align-items: center;
-  background: no-repeat 0 50%;
-  background-image: ${props => props.checked ? "url(\"data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='green' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-check'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E\")" : ""};
-`
-const IngredientRowTitle = styled.span`
-  padding: 0;
-`
-const IngredientRowCheck = styled.input`
-  margin-right: 10px;
-`
-const IngredientRowQty = styled.input`
-  width: 60px;
-  height: 26px;
-  margin-left: 25px;
-  background-color: #f5f5f5;
-  border: 1px solid;
-  border-color: ${props => props.checked ? "green" : "#dadada"};
-`
 
 function AddMealForm() {
   const dispatch = useDispatch();
@@ -72,6 +39,8 @@ function AddMealForm() {
   const [name, setName] = useState('');
   const [productsValue, setProductsValue] = useState({}); //{product.id: product.amount}
   // if id -> is checked
+
+  let errors = {};
 
   const getCurrentDate = (separator = '') => {
     return Date.now();
@@ -82,7 +51,29 @@ function AddMealForm() {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(add({id: nanoid(4), timeCreate: getCurrentDate(), name}));
+    for (const [key, value] of Object.entries(productsValue)) {
+      if (!Number(value)) {
+        //{...errors, id: 'text'}
+        errors[key] = 'Ошибка';
+      }
+    }
+    console.log(errors)
+    console.log(productsValue)
+
+    const hasErrors = Object.keys(errors).length > 0;
+    if (hasErrors) return;
+
+    dispatch(add({
+      id: nanoid(4),
+      timeCreate: getCurrentDate(),
+      name,
+      /*products: Object.keys(productsValue).map((key)=> {
+        return {id: key, requiredAmount: Number(productsValue[key])};
+      })*/
+      products: Object.entries(productsValue).map((key)=> {
+        return {id: key[0], requiredAmount: Number(key[1])};
+      })
+    }));
   }
 
   return (
@@ -92,44 +83,32 @@ function AddMealForm() {
         <Field placeholder='Блюдо' value={name} onChange={(e) => setName(e.target.value)} required/>
         <IngredientsList>
           {products.map((product) =>
-            <ProductCheck
-              product={product}
-              checked={productsValue[product.id] !== undefined}
-              amountValue={productsValue[product.id] || ''}
-              onAmountChange={console.log('')}
-              onToogleCheck={(id) => {
-                handleAddProduct(id)
-              }}/>
+            {
+              console.log(Object.keys(errors))
+              return (
+                <IngredientCheck
+                  key={product.id}
+                  product={product}
+                  checked={productsValue[product.id] !== undefined}
+                  amountValue={productsValue[product.id] || ''}
+                  errors={Object.keys(errors).indexOf(Number(product.id))}
+                  onAmountChange={(amount)=> {
+                    setProductsValue((productsValue)=> {
+                      return {...productsValue, [product.id]: amount};
+                    })
+                  }}
+                  onToogleCheck={() => {
+                    setProductsValue((productsValue)=> {
+                      return {...productsValue, [product.id]: '0'};
+                    })
+                  }}/>
+              );
+            }
           )}
         </IngredientsList>
         <ButtonAdd>Сохранить</ButtonAdd>
       </Form>
     </React.Fragment>
-  );
-}
-
-function ProductCheck(props) {
-  /*const [active, setActive] = useState(false);
-  const [qty, setQty] = useState(0);*/
-
-  /*const handleHightlight = (e) => {
-    setActive(!active);
-  }*/
-
-  return (
-    <IngredientRow active={props.checked}>
-      <label onClick={props.onToogleCheck}>
-        {/*<IngredientRowCheck type="checkbox" onChange={props.onToogleCheck} />*/}
-        <IngredientRowTitle>#{props.product.id} - {props.product.name}</IngredientRowTitle>
-      </label>
-      <IngredientRowQty
-        active={props.checked}
-        type="number"
-        value=""
-        onFocus={props.onToogleCheck}
-        onChange={(e)=> {props.onAmountChange(e.target.value)}}
-      />
-    </IngredientRow>
   );
 }
 

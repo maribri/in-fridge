@@ -30,6 +30,10 @@ const Available = styled.span`
   border-radius: 9px;
   border: 1px solid green;
 `
+const Ingredients = styled.ul`
+  list-style: none;
+  width: 30%;
+`
 const ButtonAdd = styled.button`
   appearance: none;
   border: 0;
@@ -86,7 +90,7 @@ const Select = styled.select`
 `
 
 function MealsList() {
-  console.log(useStore().getState().meals.value)
+  //console.log(useStore().getState().meals.value)
   const meals = useSelector((state) => state.meals.value);
   const products = useSelector((state) => state.products.value);
   const dispatch = useDispatch();
@@ -130,9 +134,9 @@ function MealsList() {
         return <Meal key={meal.id}>
           <div><small>#{meal.id}</small> {meal.name}</div>
           <Amount>{/*meal.unit !== 'неисчисляемое' ? meal.unit : ''*/}</Amount>
-          <ul>
-            {meal.products.map((product) => <MealProduct product={products.find((item)=> product.id===item.id)} requiredAmount={product.requiredAmount} />)}
-          </ul>
+          <Ingredients>
+            {meal.products.map((product) => <MealProduct key={product.id} product={products.find((item)=> product.id===item.id)} requiredAmount={product.requiredAmount} />)}
+          </Ingredients>
           <ButtonEdit type='button' onClick={()=> handleEdit(meal)}>✏️</ButtonEdit>
           <ButtonDelete type='button' onClick={()=> handleDelete(meal.id)}>x</ButtonDelete>
         </Meal>
@@ -147,7 +151,7 @@ function MealsList() {
 function MealProduct(props) {
   return (
     <li>
-      #{props.product.id} - {props.product.name}
+      <small>#{props.product.id}</small> {props.product.name} x {props.requiredAmount}&nbsp;{props.product.unit}
     </li>
   );
 }
