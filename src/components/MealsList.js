@@ -4,7 +4,6 @@ import {useSelector, useDispatch, useStore} from 'react-redux';
 import {remove} from '../features/meals/mealsSlice';
 import {Portal} from 'react-portal';
 import AddMealForm from './AddMealForm';
-import EditMealForm from './EditMealForm';
 import {SORTING} from '../app/constants';
 
 const Meal = styled.div`
@@ -143,7 +142,8 @@ function MealsList() {
       })}
       <ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>
       {addFormOpen && <Portal><AddMealForm/></Portal>}
-      {editFormOpen.open && <Portal><EditMealForm key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Portal>}
+      {editFormOpen.open && <Portal><AddMealForm edit={true} key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Portal>}
+      {/*editFormOpen.open && <Portal><EditMealForm key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Portal>*/}
     </React.Fragment>
   );
 }

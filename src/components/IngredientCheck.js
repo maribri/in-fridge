@@ -21,6 +21,10 @@ const IngredientRowQty = styled.input`
   border: 1px solid;
   border-color: ${props => props.checked ? "green" : "#dadada"};
 `
+const IngredientRowUnit = styled.div`
+  margin-left: 6px;
+  color: #4a4a4a;
+`
 const IngredientRowQtyError = styled.div`
   margin-left: 8px;
   color: red;
@@ -40,7 +44,8 @@ function IngredientCheck(props) {
         onFocus={props.onToogleCheck}
         onChange={(e)=> {props.onAmountChange(e.target.value)}}
       />
-      <IngredientRowQtyError>Кол-во?</IngredientRowQtyError>
+      <IngredientRowUnit>{props.product.unit}</IngredientRowUnit>
+      <IngredientRowQtyError>{props.errors}</IngredientRowQtyError>
     </IngredientRow>
   );
 }

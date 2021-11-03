@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Trash2 } from 'react-feather';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ProductsList from './components/ProductsList';
 import MealsList from './components/MealsList';
 import Planner from './components/Planner';
 import ShoppingList from './components/ShoppingList';
-import {add} from "./features/meals/mealsSlice";
-import {nanoid} from "nanoid";
+import TopMenu from './components/TopMenu';
+import {useDispatch} from "react-redux";
+import {CLEAR} from "./app/store/actions";
 
 const Container = styled.div`
   padding: 1rem;
@@ -16,6 +18,8 @@ const ButtonClear = styled.button`
   position: fixed;
   top: 12px;
   right: 12px;
+  display: flex;
+  align-items: center;
   padding: 0.6rem;
   color: #fff;
   text-shadow: 1px 1px #946262;
@@ -25,15 +29,21 @@ const ButtonClear = styled.button`
 `
 
 function App() {
-  const handleClear = async (e) => {
+  const dispatch = useDispatch();
+
+  const handleClear = (e) => {
     e.preventDefault();
-    //
+    dispatch({type: CLEAR});
   }
 
   return (
     <Router>
       <Container>
-        <ButtonClear type='button' onClick={handleClear}>Clear storage</ButtonClear>
+        <TopMenu/>
+        <ButtonClear type='button' onClick={handleClear}>
+          <Trash2 size={20} />
+          Clear storage
+        </ButtonClear>
         <Switch>
           <Route path="/meals">
             <MealsList/>

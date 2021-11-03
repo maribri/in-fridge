@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {CLEAR} from '../../app/store/actions';
 
 const initialState = {
   value: [
@@ -27,7 +28,12 @@ export const mealsSlice = createSlice({
       const newList = state.value.filter((item) => item.id !== action.payload);
       return { ...state, value: newList };
     }
-  }
+  },
+  extraReducers: {
+    [CLEAR]: (state, action) => {
+      return initialState;
+    },
+  },
 });
 
 export const { add, edit, remove } = mealsSlice.actions;

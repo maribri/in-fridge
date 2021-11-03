@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-import productsReducer from '../features/products/productsSlice';
-import mealsReducer from '../features/meals/mealsSlice';
+import counterReducer from '../../features/counter/counterSlice';
+import productsReducer from '../../features/products/productsSlice';
+import mealsReducer from '../../features/meals/mealsSlice';
 
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
@@ -28,7 +28,7 @@ const reducers = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, reducers);
 
-export const store = configureStore({
+export const index = configureStore({
   /*reducer: {
     counter: counterReducer,
     products: productsReducer,

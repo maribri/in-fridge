@@ -37,19 +37,24 @@ function EditMealForm(props) {
 
   const [name, setName] = useState(props.meal.name);
   const [productsValue, setProductsValue] = useState(props.meal.products); //{product.id: product.amount}
+  const [errors, setErrors] = useState({});
 
-  let errors = {};
+  console.log(33, props.meal.products)
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let errors = {};
+    //debugger;
     for (const [key, value] of Object.entries(productsValue)) {
       if (!Number(value)) {
         //{...errors, id: 'text'}
-        errors[key] = 'Ошибка';
+        errors[key] = 'Ошибка не заполнено';
+      } else if ((Number(value) < 0)) {
+        errors[key] = 'Ошибка отрицательное';
       }
     }
-    //console.log(errors)
-    console.log(productsValue)
+    setErrors(errors);
+    //console.log(productsValue)
 
     const hasErrors = Object.keys(errors).length > 0;
     if (hasErrors) return;
@@ -73,14 +78,15 @@ function EditMealForm(props) {
         <IngredientsList>
           {products.map((product) =>
             {
-              console.log(productsValue[product.id])
+              console.log(productsValue, Object.keys(productsValue).indexOf(product.id), product.id);
               return (
                 <IngredientCheck
                   key={product.id}
                   product={product}
-                  checked={productsValue[product.id] !== undefined}
-                  amountValue={productsValue[product.id] || ''}
-                  errors={Object.keys(errors).indexOf(Number(product.id))}
+                  //checked={productsValue[product.id] !== undefined}
+                  checked={Object.keys(productsValue).indexOf(product.id) >= 0}
+                  amountValue={productsValue[product.id] ? productsValue[product.id].requiredAmount : ''}
+                  errors={errors[product.id]}
                   onAmountChange={(amount)=> {
                     setProductsValue((productsValue)=> {
                       return {...productsValue, [product.id]: amount};

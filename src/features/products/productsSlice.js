@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import findAndReplace from '../../utils/findAndReplace';
+import {CLEAR} from '../../app/store/actions';
 
 const initialState = {
   value: [
@@ -7,6 +8,8 @@ const initialState = {
     { id: '1', timeCreate: 1632253539471, name: 'Хлеб', amount: 500, unit: 'г.' },
     { id: '2', timeCreate: 1632253539474, name: 'Картофель', amount: 300, unit: 'г.' },
     { id: '3', timeCreate: 1632253539473, name: 'Помидоры', amount: 800, unit: 'г.' },
+    { id: '4', timeCreate: 1632253539476, name: 'Огурцы', amount: 800, unit: 'г.' },
+    { id: '5', timeCreate: 1632253539477, name: 'Яйца', amount: 800, unit: 'г.' },
   ],
 };
 
@@ -31,13 +34,12 @@ export const productsSlice = createSlice({
       const newList = state.value.filter((item) => item.id !== action.payload);
       return { ...state, value: newList };
     },
-    clear: (state, action) => {
-      //
-      //storage.removeItem('persist:root')
-      //state = {} as RootState
-      return state;
-    }
-  }
+  },
+  extraReducers: {
+    [CLEAR]: (state, action) => {
+      return initialState;
+    },
+  },
 });
 
 export const { add, edit, remove } = productsSlice.actions;
