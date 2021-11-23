@@ -42,7 +42,7 @@ function IngredientCheck(props) {
         type="number"
         value={props.amountValue}
         onFocus={props.onToogleCheck}
-        onChange={(e)=> {props.onAmountChange(e.target.value)}}
+        onChange={(e)=> {props.onAmountChange(Number(e.target.value))}}
       />
       <IngredientRowUnit>{props.product.unit}</IngredientRowUnit>
       <IngredientRowQtyError>{props.errors}</IngredientRowQtyError>

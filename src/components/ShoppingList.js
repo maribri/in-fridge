@@ -16,7 +16,19 @@ function ShoppingList() {
   return (
     <React.Fragment>
       <Wrapper>
-        Planner
+        <ul>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+          <li>Product</li>
+        </ul>
       </Wrapper>
     </React.Fragment>
   );

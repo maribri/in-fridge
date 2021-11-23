@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {add, edit} from '../features/meals/mealsSlice';
 import {nanoid} from 'nanoid';
 import IngredientCheck from "./IngredientCheck";
+import findAndReplace from "../utils/findAndReplace"
 
 const Form = styled.form`
   max-width: 600px;
@@ -32,12 +33,29 @@ const IngredientsList = styled.ul`
   padding-left: 0;
 `
 
+const initializeState = (props, products) => {
+  return products.map(
+    (product) => {
+      if (!props.edit) {
+        return { id: product.id, requiredAmount: null, checked: false };
+      }
+      const mealProduct = props.meal.products.find((productProp)=> productProp.id === product.id);
+      if (mealProduct) {
+        return { ...mealProduct, checked: true };
+      } else {
+        return { id: product.id, requiredAmount: null, checked: false };
+      }
+    }
+  );
+}
+
 function AddMealForm(props) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.value);
 
   const [name, setName] = useState(props.edit ? props.meal.name : '');
-  const [productsValue, setProductsValue] = useState(props.edit ? props.meal.products : {}); //{product.id: product.amount}
+  const [productsValue, setProductsValue] = useState(initializeState(props, products)); //{product.id: product.amount}
+  //props.edit ? props.meal.products : []
   const [errors, setErrors] = useState({});
   // if id -> is checked
 
@@ -49,41 +67,34 @@ function AddMealForm(props) {
     e.preventDefault();
     let errors = {};
     //debugger;
-    for (const [key, value] of Object.entries(productsValue)) {
-      if (!Number(value)) {
+    console.log(productsValue)
+    for (const value of productsValue) {
+      console.log(value)
+      if (!value.requiredAmount) {
         //{...errors, id: 'text'}
-        errors[key] = 'Ошибка не заполнено';
-      } else if ((Number(value) < 0)) {
-        errors[key] = 'Ошибка отрицательное';
-      }
+        errors[value.id] = 'Ошибка не заполнено';
+      }/* else if ((Number(value) < 0)) {
+        errors[value.id] = 'Ошибка отрицательное';
+      }*/
     }
     setErrors(errors);
-    //console.log(productsValue)
 
     const hasErrors = Object.keys(errors).length > 0;
-    if (hasErrors) return;
+    //if (hasErrors) return;
 
     if (props.edit) {
       dispatch(edit({
         id: props.meal.id,
         timeCreate:  props.meal.timeCreate,
         name,
-        products,
-        //products: Object.entries(productsValue).map((key)=> {
-        //         return {id: key[0], requiredAmount: Number(key[1])};
-        //       })
+        products: productsValue.filter((productValue, ) => productValue.checked)
       }));
     } else {
       dispatch(add({
         id: nanoid(4),
         timeCreate: getCurrentDate(),
         name,
-        /*products: Object.keys(productsValue).map((key)=> {
-          return {id: key, requiredAmount: Number(productsValue[key])};
-        })*/
-        products: Object.entries(productsValue).map(([key, value])=> {
-          return {id: key, requiredAmount: Number(value)};
-        })
+        products: productsValue.filter((productValue, ) => productValue.checked)
       }));
     }
   }
@@ -96,28 +107,38 @@ function AddMealForm(props) {
         <IngredientsList>
           {products.map((product) =>
             {
-              console.log(productsValue, Object.keys(productsValue).indexOf(product.id), product.id);
+              ///console.log(productsValue, Object.keys(productsValue).indexOf(product.id), product.id);
+              //console.log({ productsValue, product, errors });
 
-              const checked = props.edit ? Object.keys(productsValue).indexOf(product.id) >= 0 : productsValue[product.id] !== undefined;
-              const amountValue = props.edit ? productsValue[product.id] ? productsValue[product.id].requiredAmount : '' : productsValue[product.id] || '';
+              const productValue = productsValue.find((item)=> item.id === product.id);
+              //console.log(productValue)
+              const amountValue = productValue?.requiredAmount || '';
+              const onAmountChange = (amount)=> {
+                console.log(amount)
+                setProductsValue((productsValue)=> {
+                  return findAndReplace(productsValue, (item)=> item.id === product.id, (prevValue)=>({...prevValue, requiredAmount: amount}));
+                })
+                //{id: product.id, requiredAmount: amount}
+              }
+              const onToogleCheck = () => {
+                console.log({ productsValue });
+                setProductsValue((productsValue)=> {
+                  return findAndReplace(productsValue, (item)=> item.id === product.id, (prevValue)=>({...prevValue, checked: true}));
+                  //return {...productsValue, [product.id]: '0'};
+                  //{id: product.id, requiredAmount: 0, checked: true}
+                })
+              }
 
               return (
                 <IngredientCheck
                   key={product.id}
                   product={product}
-                  checked={checked}
+                  checked={productValue.checked}
                   amountValue={amountValue}
                   errors={errors[product.id]}
-                  onAmountChange={(amount)=> {
-                    setProductsValue((productsValue)=> {
-                      return {...productsValue, [product.id]: amount};
-                    })
-                  }}
-                  onToogleCheck={() => {
-                    setProductsValue((productsValue)=> {
-                      return {...productsValue, [product.id]: '0'};
-                    })
-                  }}/>
+                  onAmountChange={onAmountChange}
+                  onToogleCheck={onToogleCheck}
+                />
               );
             }
           )}

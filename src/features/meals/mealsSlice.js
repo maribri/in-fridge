@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {CLEAR} from '../../app/store/actions';
+import findAndReplace from "../../utils/findAndReplace";
 
 const initialState = {
   value: [
@@ -20,8 +21,9 @@ export const mealsSlice = createSlice({
     edit: (state, action) => {
       console.log(action.payload);
       const newList = [...state.value];
-      state.value[0] = action.payload;
-      return false;
+      //state.value[0] = action.payload;
+      return {value: findAndReplace(state.value, (item)=> item.id === action.payload.id, action.payload)};
+      //return false;
       //return {...state, value: [...state.value, action.payload]}
     },
     remove: (state, action) => {// question
