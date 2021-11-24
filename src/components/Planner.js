@@ -5,6 +5,7 @@ import {useSelector, useDispatch, useStore} from 'react-redux';
 import {remove} from '../features/meals/mealsSlice';
 import AddPlanForm from './AddPlanForm';
 import Modal from './Modal';
+import {DAYS, MONTHS } from '../app/constants';
 import DayPicker from "react-day-picker";
 import "react-day-picker/lib/style.css";
 
@@ -42,6 +43,7 @@ const Day = styled.div`
 const DateCol = styled.div`
   padding-bottom: 19px;
   width: 7.5rem;
+  text-transform: lowercase;
   font-size: 18px;
   font-weight: bold;
 `
@@ -72,17 +74,16 @@ const Meal = styled.li`
   margin-bottom: 0.5rem;
 `
 const ButtonAdd = styled.button`
-  position: absolute;
-  top: -10px;
-  right: -79px;
   appearance: none;
+  display: block;
   border: 0;
   background-color: darkolivegreen;
   color: white;
   border-radius: 10px;
   cursor: pointer;
-  width: 46px;
+  margin: 6px 0;
   padding: 0.74rem 0;
+  width: 100%;
   font-size: 1.2rem;
 `
 const ButtonEdit = styled.button`
@@ -139,6 +140,19 @@ function Planner() {
     setEditFormOpen({open: false, plan: {}});
   }
 
+  const getCurrentDate = () => {
+    return Date.now();
+  }
+
+  const weekStart = new Date();
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  const weekDays = Array.from({length: 7}).map((_,index) => {
+    const weekDay = new Date();
+    weekDay.setDate(weekStart.getDate() + index);
+    return weekDay;
+  });
+  console.log(weekDays)
+
   return (
     <React.Fragment>
       <PlannerNav>
@@ -148,115 +162,37 @@ function Planner() {
       </PlannerNav>
       <DayPicker />
       <PlannerWrapper>
-        <Day>
-          <DateCol>22 ноя. <br/>понедельник</DateCol>
-          <SetList>
-            <Set>
-              <SetName>завтрак</SetName>
-              <MealsAdded>
-                <Meal>
-                  meal 1
-                  <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
-                  <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
-                </Meal>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <Set>
-              <SetName>ужин</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539475)}>+</ButtonAdd>
-          </SetList>
-        </Day>
-        <Day>
-          <DateCol>23 ноя. <br/>вторник</DateCol>
-          <SetList>
-            <Set>
-              <SetName>завтрак</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <Set>
-              <SetName>обед</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <Set>
-              <SetName>ужин</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539478)}>+</ButtonAdd>
-          </SetList>
-        </Day>
-        <Day>
-          <DateCol>24 ноя. <br/>среда</DateCol>
-          <SetList>
-            <Set>
-              <SetName>завтрак</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <Set>
-              <SetName>обед</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <Set>
-              <SetName>перекус</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539477)}>+</ButtonAdd>
-          </SetList>
-        </Day>
-        <Day>
-          <DateCol>25 ноя. <br/>четверг</DateCol>
-          <SetList>
-            <Set>
-              <SetName>завтрак</SetName>
-              <MealsAdded>
-                <li>meal 1</li>
-                <li>meal 2</li>
-                <li>meal 3</li>
-                <li>meal 4</li>
-              </MealsAdded>
-            </Set>
-            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539474)}>+</ButtonAdd>
-          </SetList>
-        </Day>
+
+        {weekDays.map((weekDay)=>
+          <Day key={weekDay.getDate()+weekDay.getMonth()+weekDay.getFullYear()}>
+            <DateCol>{weekDay.getDate()} {MONTHS[weekDay.getMonth()]} <br/>{DAYS[weekDay.getDay()]}</DateCol>
+            <SetList>
+              <Set>
+                <SetName>завтрак</SetName>
+                <MealsAdded>
+                  <Meal>meal 1</Meal>
+                  <Meal>meal 2</Meal>
+                  <Meal>meal 3</Meal>
+                  <Meal>meal 4</Meal>
+                </MealsAdded>
+                <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
+                <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
+              </Set>
+              <Set>
+                <SetName>ужин</SetName>
+                <MealsAdded>
+                  <Meal>meal 1</Meal>
+                  <Meal>meal 2</Meal>
+                  <Meal>meal 3</Meal>
+                  <Meal>meal 4</Meal>
+                </MealsAdded>
+                <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
+                <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
+              </Set>
+              <ButtonAdd type='button' onClick={()=> handleAdd(weekDay)}>+</ButtonAdd>
+            </SetList>
+          </Day>
+        )}
         <Day>
           <DateCol>26 ноя. <br/>пятница</DateCol>
           <SetList>
