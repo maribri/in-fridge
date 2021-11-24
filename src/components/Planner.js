@@ -1,15 +1,30 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {ArrowLeft, ArrowRight, Edit2, Delete} from 'react-feather';
-import {remove} from "../features/meals/mealsSlice";
+import {useSelector, useDispatch, useStore} from 'react-redux';
+import {remove} from '../features/meals/mealsSlice';
+import AddPlanForm from './AddPlanForm';
+import Modal from './Modal';
+import DayPicker from "react-day-picker";
+import "react-day-picker/lib/style.css";
 
 const PlannerNav = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   border: 1px solid limegreen;
   border-radius: 10px;
   padding: 0.6rem 1rem;
   margin-bottom: 1rem;
+`
+const PlannerNavButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid limegreen;
+  border-radius: 10px;
+  padding: 0.5rem 0.5rem;
+  margin: 0 1rem;
 `
 const PlannerWrapper = styled.div`
   border: 1px solid limegreen;
@@ -102,8 +117,16 @@ const ButtonDelete = styled.button`
 `
 
 function Planner() {
-  const handleAdd = () => {
-    //
+  const plans = useSelector((state) => state.plans.value);
+  //const meals = useSelector((state) => state.meals.value);
+  //const products = useSelector((state) => state.products.value);
+  const dispatch = useDispatch();
+
+  const [addFormOpen, setAddFormOpen] = useState(false);
+  const [editFormOpen, setEditFormOpen] = useState({open: false, plan: {}});
+
+  const handleAdd = (day) => {
+    setAddFormOpen(true);
   }
   const handleEdit = (meal) => {
     //
@@ -111,13 +134,22 @@ function Planner() {
   const handleDelete = (id) => {
     //
   }
+  const handleClose = () => {
+    setAddFormOpen(false);
+    setEditFormOpen({open: false, plan: {}});
+  }
 
   return (
     <React.Fragment>
-      <PlannerNav><ArrowLeft size={20} /> &nbsp;Неделя&nbsp; <ArrowRight size={20} /></PlannerNav>
+      <PlannerNav>
+        <PlannerNavButton><ArrowLeft size={20} /></PlannerNavButton>
+        &nbsp;Неделя&nbsp;
+        <PlannerNavButton><ArrowRight size={20} /></PlannerNavButton>
+      </PlannerNav>
+      <DayPicker />
       <PlannerWrapper>
         <Day>
-          <DateCol>15 ноя. <br/>понедельник</DateCol>
+          <DateCol>22 ноя. <br/>понедельник</DateCol>
           <SetList>
             <Set>
               <SetName>завтрак</SetName>
@@ -141,11 +173,11 @@ function Planner() {
                 <li>meal 4</li>
               </MealsAdded>
             </Set>
-            <ButtonAdd type='button' onClick={handleAdd}>+</ButtonAdd>
+            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539475)}>+</ButtonAdd>
           </SetList>
         </Day>
         <Day>
-          <DateCol>16 ноя. <br/>вторник</DateCol>
+          <DateCol>23 ноя. <br/>вторник</DateCol>
           <SetList>
             <Set>
               <SetName>завтрак</SetName>
@@ -174,11 +206,11 @@ function Planner() {
                 <li>meal 4</li>
               </MealsAdded>
             </Set>
-            <ButtonAdd type='button' onClick={handleAdd}>+</ButtonAdd>
+            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539478)}>+</ButtonAdd>
           </SetList>
         </Day>
         <Day>
-          <DateCol>17 ноя. <br/>среда</DateCol>
+          <DateCol>24 ноя. <br/>среда</DateCol>
           <SetList>
             <Set>
               <SetName>завтрак</SetName>
@@ -207,11 +239,11 @@ function Planner() {
                 <li>meal 4</li>
               </MealsAdded>
             </Set>
-            <ButtonAdd type='button' onClick={handleAdd}>+</ButtonAdd>
+            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539477)}>+</ButtonAdd>
           </SetList>
         </Day>
         <Day>
-          <DateCol>18 ноя. <br/>четверг</DateCol>
+          <DateCol>25 ноя. <br/>четверг</DateCol>
           <SetList>
             <Set>
               <SetName>завтрак</SetName>
@@ -222,16 +254,17 @@ function Planner() {
                 <li>meal 4</li>
               </MealsAdded>
             </Set>
-            <ButtonAdd type='button' onClick={handleAdd}>+</ButtonAdd>
+            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539474)}>+</ButtonAdd>
           </SetList>
         </Day>
         <Day>
-          <DateCol>19 ноя. <br/>пятница</DateCol>
+          <DateCol>26 ноя. <br/>пятница</DateCol>
           <SetList>
-            <ButtonAdd type='button' onClick={handleAdd}>+</ButtonAdd>
+            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539470)}>+</ButtonAdd>
           </SetList>
         </Day>
       </PlannerWrapper>
+      {addFormOpen && <Modal handleClose={handleClose}><AddPlanForm/></Modal>}
     </React.Fragment>
   );
 }

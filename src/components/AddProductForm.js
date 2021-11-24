@@ -60,6 +60,7 @@ function AddProductForm() {
         <Select onChange={(e) => setUnit(e.target.value)}>
           <option>гр.</option>
           <option>л.</option>
+          <option>шт.</option>
           <option>неисчисляемое</option>
         </Select>
         <ButtonAdd>Сохранить</ButtonAdd>

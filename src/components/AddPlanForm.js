@@ -17,6 +17,14 @@ const Field = styled.input`
   margin-bottom: 0.8rem;
   padding: 0.3rem;
 `
+const Select = styled.select`
+  margin-bottom: 0.8rem;
+  padding: 0.3rem;
+  min-width: 30%;
+  font-size: 16px;
+  border-color: forestgreen;
+  border-radius: 6px;
+`
 const ButtonAdd = styled.button`
   appearance: none;
   border: 0;
@@ -27,11 +35,6 @@ const ButtonAdd = styled.button`
   width: 100%;
   padding: 0.74rem 0;
   font-size: 1.2rem;
-`
-const IngredientsList = styled.ul`
-  max-height: 500px;
-  overflow-y: auto;
-  padding-left: 0;
 `
 
 const initializeState = (props, products) => {
@@ -50,11 +53,11 @@ const initializeState = (props, products) => {
   );
 }
 
-function AddMealForm(props) {
+function AddPlanForm(props) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.value);
 
-  const [name, setName] = useState(props.edit ? props.meal.name : '');
+  const [set, setSet] = useState('');
   const [productsValue, setProductsValue] = useState(initializeState(props, products)); //{product.id: product.amount}
   //props.edit ? props.meal.products : []
   const [errors, setErrors] = useState({});
@@ -90,14 +93,12 @@ function AddMealForm(props) {
       dispatch(edit({
         id: props.meal.id,
         timeCreate:  props.meal.timeCreate,
-        name,
         products: productsValue.filter((productValue, ) => productValue.checked)
       }));
     } else {
       dispatch(add({
         id: nanoid(4),
         timeCreate: getCurrentDate(),
-        name,
         products: productsValue.filter((productValue, ) => productValue.checked)
       }));
     }
@@ -106,51 +107,17 @@ function AddMealForm(props) {
   return (
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
-        {props.edit ? <h2>Изменить блюдо #{props.meal.id} ({props.meal.name})</h2> : <h2>Добавить новое блюдо</h2>}
-        <Field placeholder='Блюдо' value={name} onChange={(e) => setName(e.target.value)} required/>
-        <IngredientsList>
-          {products.map((product) =>
-            {
-              ///console.log(productsValue, Object.keys(productsValue).indexOf(product.id), product.id);
-              //console.log({ productsValue, product, errors });
-
-              const productValue = productsValue.find((item)=> item.id === product.id);
-              //console.log(productValue)
-              const amountValue = productValue?.requiredAmount || '';
-              const onAmountChange = (amount)=> {
-                console.log(amount)
-                setProductsValue((productsValue)=> {
-                  return findAndReplace(productsValue, (item)=> item.id === product.id, (prevValue)=>({...prevValue, requiredAmount: amount}));
-                })
-                //{id: product.id, requiredAmount: amount}
-              }
-              const onToogleCheck = () => {
-                console.log({ productsValue });
-                setProductsValue((productsValue)=> {
-                  return findAndReplace(productsValue, (item)=> item.id === product.id, (prevValue)=>({...prevValue, checked: true}));
-                  //return {...productsValue, [product.id]: '0'};
-                  //{id: product.id, requiredAmount: 0, checked: true}
-                })
-              }
-
-              return (
-                <IngredientCheck
-                  key={product.id}
-                  product={product}
-                  checked={productValue.checked}
-                  amountValue={amountValue}
-                  errors={errors[product.id]}
-                  onAmountChange={onAmountChange}
-                  onToogleCheck={onToogleCheck}
-                />
-              );
-            }
-          )}
-        </IngredientsList>
+        {props.edit ? <h2>Изменить прием пищи #{props.meal.id} ({props.meal.name})</h2> : <h2>Добавить новый прием пищи</h2>}
+        <Select onChange={(e) => setSet(e.target.value)} required>
+          <option>завтрак</option>
+          <option>обед</option>
+          <option>ужин</option>
+          <option>перекус</option>
+        </Select>
         <ButtonAdd>Сохранить</ButtonAdd>
       </Form>
     </React.Fragment>
   );
 }
 
-export default AddMealForm;
+export default AddPlanForm;

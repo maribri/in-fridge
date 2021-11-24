@@ -5,6 +5,7 @@ import {remove} from '../features/products/productsSlice';
 import {Portal} from 'react-portal';
 import AddProductForm from './AddProductForm';
 import EditProductForm from './EditProductForm';
+import Modal from './Modal';
 import {SORTING} from '../app/constants';
 
 const Product = styled.div`
@@ -104,6 +105,10 @@ function ProductsList() {
   const handleDelete = (id) => {
     dispatch(remove(id));
   }
+  const handleClose = () => {
+    setAddFormOpen(false);
+    setEditFormOpen({open: false, product: {}});
+  }
 
   return (
     <React.Fragment>
@@ -136,8 +141,8 @@ function ProductsList() {
         </Product>
       })}
       <ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>
-      {addFormOpen && <Portal><AddProductForm/></Portal>}
-      {editFormOpen.open && <Portal><EditProductForm key={editFormOpen.product.id} product={editFormOpen.product}/></Portal>}
+      {addFormOpen && <Modal handleClose={handleClose}><AddProductForm/></Modal>}
+      {editFormOpen.open && <Modal handleClose={handleClose}><EditProductForm key={editFormOpen.product.id} product={editFormOpen.product}/></Modal>}
     </React.Fragment>
   );
 }

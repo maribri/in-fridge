@@ -4,6 +4,7 @@ import {useSelector, useDispatch, useStore} from 'react-redux';
 import {remove} from '../features/meals/mealsSlice';
 import {Portal} from 'react-portal';
 import AddMealForm from './AddMealForm';
+import Modal from './Modal';
 import {SORTING} from '../app/constants';
 
 const Meal = styled.div`
@@ -31,7 +32,8 @@ const Available = styled.span`
 `
 const Ingredients = styled.ul`
   list-style: none;
-  width: 30%;
+  width: 35%;
+  font-size: 0.9rem;
 `
 const ButtonAdd = styled.button`
   appearance: none;
@@ -107,6 +109,10 @@ function MealsList() {
   const handleDelete = (id) => {
     dispatch(remove(id));
   }
+  const handleClose = () => {
+    setAddFormOpen(false);
+    setEditFormOpen({open: false, meal: {}});
+  }
 
   return (
     <React.Fragment>
@@ -141,9 +147,8 @@ function MealsList() {
         </Meal>
       })}
       <ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>
-      {addFormOpen && <Portal><AddMealForm/></Portal>}
-      {editFormOpen.open && <Portal><AddMealForm edit={true} key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Portal>}
-      {/*editFormOpen.open && <Portal><EditMealForm key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Portal>*/}
+      {addFormOpen && <Modal handleClose={handleClose}><AddMealForm/></Modal>}
+      {editFormOpen.open && <Modal handleClose={handleClose}><AddMealForm edit={true} key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Modal>}
     </React.Fragment>
   );
 }
