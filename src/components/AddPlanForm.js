@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {add, edit} from '../features/meals/mealsSlice';
 import {nanoid} from 'nanoid';
+import Select from 'react-select';
 import IngredientCheck from "./IngredientCheck";
 import findAndReplace from "../utils/findAndReplace"
 
@@ -17,7 +18,7 @@ const Field = styled.input`
   margin-bottom: 0.8rem;
   padding: 0.3rem;
 `
-const Select = styled.select`
+const SelectSimple = styled.select`
   margin-bottom: 0.8rem;
   padding: 0.3rem;
   min-width: 30%;
@@ -33,6 +34,7 @@ const ButtonAdd = styled.button`
   border-radius: 10px;
   cursor: pointer;
   width: 100%;
+  margin-top: 0.8rem;
   padding: 0.74rem 0;
   font-size: 1.2rem;
 `
@@ -56,6 +58,7 @@ const initializeState = (props, products) => {
 function AddPlanForm(props) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.value);
+  const meals = useSelector((state) => state.meals.value);
 
   const [set, setSet] = useState('');
   const [productsValue, setProductsValue] = useState(initializeState(props, products)); //{product.id: product.amount}
@@ -108,12 +111,20 @@ function AddPlanForm(props) {
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
         {props.edit ? <h2>Изменить прием пищи #{props.meal.id} ({props.meal.name})</h2> : <h2>Добавить новый прием пищи</h2>}
-        <Select onChange={(e) => setSet(e.target.value)} required>
+        <SelectSimple onChange={(e) => setSet(e.target.value)} required>
           <option>завтрак</option>
           <option>обед</option>
           <option>ужин</option>
           <option>перекус</option>
-        </Select>
+        </SelectSimple>
+        <Select
+          placeholder="Выберите блюдо..."
+          isMulti
+          name="colors"
+          options={meals.map(item => ({ value: item.id, label: item.name }))}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
         <ButtonAdd>Сохранить</ButtonAdd>
       </Form>
     </React.Fragment>

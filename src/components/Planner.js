@@ -119,7 +119,7 @@ const ButtonDelete = styled.button`
 
 function Planner() {
   const plans = useSelector((state) => state.plans.value);
-  //const meals = useSelector((state) => state.meals.value);
+  const meals = useSelector((state) => state.meals.value);
   //const products = useSelector((state) => state.products.value);
   const dispatch = useDispatch();
 
@@ -144,6 +144,15 @@ function Planner() {
     return Date.now();
   }
 
+  const getSetsByDate = (timestamp) => {
+    const filtered = plans.filter((plan) => {
+        return plan.date === timestamp;
+      }
+    );
+    console.log(filtered);
+    return filtered;
+  }
+
   const weekStart = new Date();
   weekStart.setDate(weekStart.getDate() - weekStart.getDay());
   const weekDays = Array.from({length: 7}).map((_,index) => {
@@ -161,34 +170,30 @@ function Planner() {
         <PlannerNavButton><ArrowRight size={20} /></PlannerNavButton>
       </PlannerNav>
       <DayPicker />
-      <PlannerWrapper>
 
+      <PlannerWrapper>
         {weekDays.map((weekDay)=>
           <Day key={weekDay.getDate()+weekDay.getMonth()+weekDay.getFullYear()}>
-            <DateCol>{weekDay.getDate()} {MONTHS[weekDay.getMonth()]} <br/>{DAYS[weekDay.getDay()]}</DateCol>
+            <DateCol>{weekDay.getDate()} {MONTHS[weekDay.getMonth()]} <br/>{DAYS[weekDay.getDay()]}<br/>t {Date.parse(weekDay.getFullYear()+'-'+weekDay.getMonth()+'-'+weekDay.getDate())}</DateCol>
             <SetList>
-              <Set>
-                <SetName>завтрак</SetName>
-                <MealsAdded>
-                  <Meal>meal 1</Meal>
-                  <Meal>meal 2</Meal>
-                  <Meal>meal 3</Meal>
-                  <Meal>meal 4</Meal>
-                </MealsAdded>
-                <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
-                <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
-              </Set>
-              <Set>
+              {getSetsByDate(Date.parse(weekDay.getFullYear()+'-'+weekDay.getMonth()+'-'+weekDay.getDate())).map((filteredDay)=>
+                <Set>
+                  <SetName>{filteredDay.set}</SetName>
+                  <MealsAdded>
+                    {filteredDay.meals.map((meal, i)=><Meal>{meal[i]}</Meal>)}
+                  </MealsAdded>
+                  <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
+                  <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
+                </Set>)}
+              {/*<Set>
                 <SetName>ужин</SetName>
                 <MealsAdded>
                   <Meal>meal 1</Meal>
                   <Meal>meal 2</Meal>
-                  <Meal>meal 3</Meal>
-                  <Meal>meal 4</Meal>
                 </MealsAdded>
                 <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
                 <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
-              </Set>
+              </Set>*/}
               <ButtonAdd type='button' onClick={()=> handleAdd(weekDay)}>+</ButtonAdd>
             </SetList>
           </Day>
