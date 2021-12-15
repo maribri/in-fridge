@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
-import {add, edit} from '../features/meals/mealsSlice';
+import {add, edit} from '../features/planner/plannerSlice';
 import {nanoid} from 'nanoid';
 import Select from 'react-select';
-import IngredientCheck from "./IngredientCheck";
 import findAndReplace from "../utils/findAndReplace"
+import DayPicker from "react-day-picker";
+import "react-day-picker/lib/style.css";
 
 const Form = styled.form`
   box-sizing: border-box;
@@ -39,17 +40,17 @@ const ButtonAdd = styled.button`
   font-size: 1.2rem;
 `
 
-const initializeState = (props, products) => {
-  return products.map(
-    (product) => {
+const initializeState = (props, meals) => {
+  return meals.map(
+    (meal) => {
       if (!props.edit) {
-        return { id: product.id, requiredAmount: null, checked: false };
+        return { id: meal.id };
       }
-      const mealProduct = props.meal.products.find((productProp)=> productProp.id === product.id);
+      const mealProduct = props.meal.meals.find((productProp)=> productProp.id === meal.id);
       if (mealProduct) {
-        return { ...mealProduct, checked: true };
+        return { ...mealProduct };
       } else {
-        return { id: product.id, requiredAmount: null, checked: false };
+        return { id: meal.id };
       }
     }
   );
@@ -57,11 +58,12 @@ const initializeState = (props, products) => {
 
 function AddPlanForm(props) {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.value);
+  //const products = useSelector((state) => state.products.value);
   const meals = useSelector((state) => state.meals.value);
 
   const [set, setSet] = useState('');
-  const [productsValue, setProductsValue] = useState(initializeState(props, products)); //{product.id: product.amount}
+  const [selectedMeals, setSelectedMeals] = useState([]);
+  const [productsValue, setProductsValue] = useState(initializeState(props, meals)); //{product.id: product.amount}
   //props.edit ? props.meal.products : []
   const [errors, setErrors] = useState({});
   // if id -> is checked
@@ -74,8 +76,8 @@ function AddPlanForm(props) {
     e.preventDefault();
     let errors = {};
     //debugger;
-    console.log(productsValue)
-    for (const value of productsValue) {
+    //console.log(productsValue)
+    /*for (const value of productsValue) {
       console.log(value)
       if (value.checked) {
         if (!value.requiredAmount) {
@@ -90,19 +92,21 @@ function AddPlanForm(props) {
 
     console.log(errors)
     const hasErrors = Object.keys(errors).length > 0;
-    if (hasErrors) return;
+    if (hasErrors) return;*/
 
     if (props.edit) {
-      dispatch(edit({
+      /*dispatch(edit({
         id: props.meal.id,
         timeCreate:  props.meal.timeCreate,
         products: productsValue.filter((productValue, ) => productValue.checked)
-      }));
+      }));*/
     } else {
       dispatch(add({
         id: nanoid(4),
         timeCreate: getCurrentDate(),
-        products: productsValue.filter((productValue, ) => productValue.checked)
+        date: 1639688400000,
+        set: set,
+        meals: []
       }));
     }
   }
@@ -111,8 +115,9 @@ function AddPlanForm(props) {
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
         {props.edit ? <h2>Изменить прием пищи #{props.meal.id} ({props.meal.name})</h2> : <h2>Добавить новый прием пищи</h2>}
+        <DayPicker />
         <SelectSimple onChange={(e) => setSet(e.target.value)} required>
-          <option>завтрак</option>
+          <option defaultChecked>завтрак</option>
           <option>обед</option>
           <option>ужин</option>
           <option>перекус</option>
@@ -121,6 +126,8 @@ function AddPlanForm(props) {
           placeholder="Выберите блюдо..."
           isMulti
           name="colors"
+          //value={selectedMeals}
+          onChange={(e) => setSelectedMeals(e.target.value)}
           options={meals.map(item => ({ value: item.id, label: item.name }))}
           className="basic-multi-select"
           classNamePrefix="select"

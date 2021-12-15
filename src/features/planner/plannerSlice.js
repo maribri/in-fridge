@@ -4,9 +4,13 @@ import findAndReplace from "../../utils/findAndReplace";
 
 const initialState = {
   value: [
-    { id: '0', timeCreate: 1632253539470, date: 1636059600000, set: 'завтрак', meals: ['0','2','2'] },
-    { id: '1', timeCreate: 1632253539470, date: 1636059600000, set: 'обед', meals: ['2','2','2'] },
-    { id: '2', timeCreate: 1632253539470, date: 1632253539470, set: 'ужин', meals: ['0','0','2'] },
+    { id: '0', timeCreate: 1632253539470, date: 1639256400000, set: 'завтрак', meals: ['0','1','2'] },
+    { id: '1', timeCreate: 1632253539470, date: 1639256400000, set: 'обед', meals: ['3','2','2'] },
+    { id: '2', timeCreate: 1632253539470, date: 1639256400000, set: 'ужин', meals: ['0','1','2'] },
+    { id: '3', timeCreate: 1632253539470, date: 1639342800000, set: 'ужин', meals: ['2','0','2'] },
+    { id: '4', timeCreate: 1632253539470, date: 1639602000000, set: 'завтрак', meals: ['0','0','2'] },
+    { id: '5', timeCreate: 1632253539470, date: 1639688400000, set: 'завтрак', meals: ['0','0','2'] },
+    { id: '6', timeCreate: 1632253539470, date: 1639688400000, set: 'ужин', meals: ['0','0','2'] },
   ],
 };
 
@@ -16,6 +20,7 @@ export const plannerSlice = createSlice({
   reducers: {
     add: (state, action) => {
       //state.value
+      console.log(action.payload)
       return {...state, value: [...state.value, action.payload]}
     },
     edit: (state, action) => {

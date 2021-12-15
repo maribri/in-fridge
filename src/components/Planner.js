@@ -8,6 +8,7 @@ import Modal from './Modal';
 import {DAYS, MONTHS } from '../app/constants';
 import DayPicker from "react-day-picker";
 import "react-day-picker/lib/style.css";
+import AddMealForm from "./AddMealForm";
 
 const PlannerNav = styled.div`
   display: flex;
@@ -41,6 +42,7 @@ const Day = styled.div`
   border-bottom: 1px solid limegreen;
 `
 const DateCol = styled.div`
+  margin-right: 20px;
   padding-bottom: 19px;
   width: 7.5rem;
   text-transform: lowercase;
@@ -117,11 +119,31 @@ const ButtonDelete = styled.button`
   margin-left: 0.5rem;
 `
 
+const weekInMilliseconds = 1000 * 60 * 60 * 24 * 7;
+
 function Planner() {
   const plans = useSelector((state) => state.plans.value);
   const meals = useSelector((state) => state.meals.value);
   //const products = useSelector((state) => state.products.value);
   const dispatch = useDispatch();
+
+  const [weekStart, setWeekStart] = useState(()=>{
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    //@todo interval
+    return weekStart;
+  });
+  console.log(weekStart)
+
+  const weekDays = Array.from({length: 7}).map((_,index) => {
+    const weekDay = new Date(weekStart);
+    weekDay.setDate(weekStart.getDate() + index);
+    weekDay.setHours(0);
+    weekDay.setMinutes(0);
+    weekDay.setSeconds(0);
+    weekDay.setMilliseconds(0);
+    return weekDay;
+  });
 
   const [addFormOpen, setAddFormOpen] = useState(false);
   const [editFormOpen, setEditFormOpen] = useState({open: false, plan: {}});
@@ -129,15 +151,27 @@ function Planner() {
   const handleAdd = (day) => {
     setAddFormOpen(true);
   }
-  const handleEdit = (meal) => {
-    //
+  const handleEdit = (plan) => {
+    setEditFormOpen({open: true, plan});
   }
   const handleDelete = (id) => {
-    //
+    dispatch(remove(id));
   }
   const handleClose = () => {
     setAddFormOpen(false);
     setEditFormOpen({open: false, plan: {}});
+  }
+
+  const goWeekPrev = () => {
+    setWeekStart((weekStart)=> {
+      return new Date(weekStart.getTime() - weekInMilliseconds)
+    });
+  }
+
+  const goWeekNext = () => {
+    setWeekStart((weekStart)=> {
+      return new Date(weekStart.getTime() + weekInMilliseconds)
+    });
   }
 
   const getCurrentDate = () => {
@@ -149,38 +183,33 @@ function Planner() {
         return plan.date === timestamp;
       }
     );
-    console.log(filtered);
+    //console.log(filtered);
     return filtered;
   }
-
-  const weekStart = new Date();
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-  const weekDays = Array.from({length: 7}).map((_,index) => {
-    const weekDay = new Date();
-    weekDay.setDate(weekStart.getDate() + index);
-    return weekDay;
-  });
-  console.log(weekDays)
 
   return (
     <React.Fragment>
       <PlannerNav>
-        <PlannerNavButton><ArrowLeft size={20} /></PlannerNavButton>
+        <PlannerNavButton onClick={goWeekPrev}><ArrowLeft size={20} /></PlannerNavButton>
         &nbsp;Неделя&nbsp;
-        <PlannerNavButton><ArrowRight size={20} /></PlannerNavButton>
+        <PlannerNavButton onClick={goWeekNext}><ArrowRight size={20} /></PlannerNavButton>
       </PlannerNav>
-      <DayPicker />
 
       <PlannerWrapper>
         {weekDays.map((weekDay)=>
           <Day key={weekDay.getDate()+weekDay.getMonth()+weekDay.getFullYear()}>
-            <DateCol>{weekDay.getDate()} {MONTHS[weekDay.getMonth()]} <br/>{DAYS[weekDay.getDay()]}<br/>t {Date.parse(weekDay.getFullYear()+'-'+weekDay.getMonth()+'-'+weekDay.getDate())}</DateCol>
+            <DateCol>{weekDay.getDate()} {MONTHS[weekDay.getMonth()]} <br/>{DAYS[weekDay.getDay()]}<br/><small>{weekDay.getTime()}</small></DateCol>
             <SetList>
-              {getSetsByDate(Date.parse(weekDay.getFullYear()+'-'+weekDay.getMonth()+'-'+weekDay.getDate())).map((filteredDay)=>
+              {getSetsByDate(weekDay.getTime()).map((filteredDay)=>
                 <Set>
                   <SetName>{filteredDay.set}</SetName>
                   <MealsAdded>
-                    {filteredDay.meals.map((meal, i)=><Meal>{meal[i]}</Meal>)}
+                    {filteredDay.meals.map((meal, i)=>
+                      {
+                        const mealObject = meals.find((m)=> m.id === meal)
+                        return <Meal>{mealObject.name}</Meal>;
+                      }
+                    )}
                   </MealsAdded>
                   <ButtonEdit type='button' onClick={()=> handleEdit()}><Edit2 size={14} />️</ButtonEdit>
                   <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
@@ -198,14 +227,9 @@ function Planner() {
             </SetList>
           </Day>
         )}
-        <Day>
-          <DateCol>26 ноя. <br/>пятница</DateCol>
-          <SetList>
-            <ButtonAdd type='button' onClick={()=> handleAdd(1632253539470)}>+</ButtonAdd>
-          </SetList>
-        </Day>
       </PlannerWrapper>
       {addFormOpen && <Modal handleClose={handleClose}><AddPlanForm/></Modal>}
+      {editFormOpen.open && <Modal handleClose={handleClose}><AddPlanForm edit={true} key={editFormOpen.plan.id} plan={editFormOpen.plan}/></Modal>}
     </React.Fragment>
   );
 }
