@@ -4,13 +4,13 @@ import findAndReplace from "../../utils/findAndReplace";
 
 const initialState = {
   value: [
-    { id: '0', timeCreate: 1632253539470, date: 1639256400000, set: 'завтрак', meals: ['0','1','2'] },
-    { id: '1', timeCreate: 1632253539470, date: 1639256400000, set: 'обед', meals: ['3','2','2'] },
-    { id: '2', timeCreate: 1632253539470, date: 1639256400000, set: 'ужин', meals: ['0','1','2'] },
-    { id: '3', timeCreate: 1632253539470, date: 1639342800000, set: 'ужин', meals: ['2','0','2'] },
-    { id: '4', timeCreate: 1632253539470, date: 1639602000000, set: 'завтрак', meals: ['0','0','2'] },
-    { id: '5', timeCreate: 1632253539470, date: 1639688400000, set: 'завтрак', meals: ['0','0','2'] },
-    { id: '6', timeCreate: 1632253539470, date: 1639688400000, set: 'ужин', meals: ['0','0','2'] },
+    { id: '0', timeCreate: 1632253539470, date: 1639256400000, set: 'breakfast', meals: ['0','1','2'] },
+    { id: '1', timeCreate: 1632253539470, date: 1639256400000, set: 'lunch', meals: ['3','2','2'] },
+    { id: '2', timeCreate: 1632253539470, date: 1639256400000, set: 'dinner', meals: ['0','1','2'] },
+    { id: '3', timeCreate: 1632253539470, date: 1639342800000, set: 'dinner', meals: ['2','0','2'] },
+    { id: '4', timeCreate: 1632253539470, date: 1639602000000, set: 'breakfast', meals: ['0','0','2'] },
+    { id: '5', timeCreate: 1632253539470, date: 1639688400000, set: 'breakfast', meals: ['0','0','2'] },
+    { id: '6', timeCreate: 1632253539470, date: 1639688400000, set: 'dinner', meals: ['0','0','2'] },
   ],
 };
 

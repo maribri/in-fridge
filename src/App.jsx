@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Trash2 } from 'react-feather';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProductsList from './components/ProductsList';
 import MealsList from './components/MealsList';
 import Planner from './components/Planner';
@@ -44,23 +44,15 @@ function App() {
           <Trash2 size={20} />
           Clear storage
         </ButtonClear>
-        <Switch>
-          <Route path="/meals">
-            <MealsList/>
-          </Route>
-          <Route path="/planner">
-            <Planner/>
-          </Route>
-          <Route path="/shopping-list">
-            <ShoppingList/>
-          </Route>
-          <Route path="/">
-            <ProductsList/>
-          </Route>
+        <Routes>
+          <Route path="/meals" element={<MealsList />} />
+          <Route path="/planner" element={<Planner />} />
+          <Route path="/shopping-list" element={<ShoppingList />} />
+          <Route path="/" element={<ProductsList />} />
           <Route path="*">
-            <div>404 not found</div>
+            <React.Fragment>404 not found</React.Fragment>
           </Route>
-        </Switch>
+        </Routes>
       </Container>
     </Router>
   );

@@ -54,16 +54,16 @@ function AddProductForm() {
   return (
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
-        <h2>Добавить новый продукт</h2>
-        <Field placeholder='Продукт' value={name} onChange={(e) => setName(e.target.value)} required />
-        <Field placeholder='Количество' value={amount} onChange={(e) => setAmount(e.target.value)} type='number' />
+        <h2>Add new food</h2>
+        <Field placeholder='Food' value={name} onChange={(e) => setName(e.target.value)} required />
+        <Field placeholder='Quantity' value={amount} onChange={(e) => setAmount(e.target.value)} type='number' />
         <Select onChange={(e) => setUnit(e.target.value)}>
-          <option>гр.</option>
-          <option>л.</option>
-          <option>шт.</option>
-          <option>неисчисляемое</option>
+          <option>g.</option>
+          <option>ml.</option>
+          <option>pc.</option>
+          <option>uncountable</option>
         </Select>
-        <ButtonAdd>Сохранить</ButtonAdd>
+        <ButtonAdd>Save</ButtonAdd>
       </Form>
     </React.Fragment>
   );

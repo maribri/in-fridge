@@ -5,8 +5,8 @@ import {add, edit} from '../features/planner/plannerSlice';
 import {nanoid} from 'nanoid';
 import Select from 'react-select';
 import findAndReplace from "../utils/findAndReplace"
-import DayPicker from "react-day-picker";
-import "react-day-picker/lib/style.css";
+import {DayPicker} from "react-day-picker";
+import "react-day-picker/src/style.css";
 
 const Form = styled.form`
   box-sizing: border-box;
@@ -82,9 +82,9 @@ function AddPlanForm(props) {
       if (value.checked) {
         if (!value.requiredAmount) {
           //{...errors, id: 'text'}
-          errors[value.id] = 'Ошибка не заполнено';
+          errors[value.id] = 'Error empty';
         } else if ((Number(value.requiredAmount) < 0)) {
-          errors[value.id] = 'Ошибка отрицательное';
+          errors[value.id] = 'Error negative';
         }
       }
     }
@@ -114,16 +114,16 @@ function AddPlanForm(props) {
   return (
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
-        {props.edit ? <h2>Изменить прием пищи #{props.meal.id} ({props.meal.name})</h2> : <h2>Добавить новый прием пищи</h2>}
+        {props.edit ? <h2>Edit mealtime #{props.meal.id} ({props.meal.name})</h2> : <h2>Add new mealtime</h2>}
         <DayPicker />
         <SelectSimple onChange={(e) => setSet(e.target.value)} required>
-          <option defaultChecked>завтрак</option>
-          <option>обед</option>
-          <option>ужин</option>
-          <option>перекус</option>
+          <option defaultChecked>breakfast</option>
+          <option>lunch</option>
+          <option>dinner</option>
+          <option>snack</option>
         </SelectSimple>
         <Select
-          placeholder="Выберите блюдо..."
+          placeholder="Choose a dish..."
           isMulti
           name="colors"
           //value={selectedMeals}
@@ -132,7 +132,7 @@ function AddPlanForm(props) {
           className="basic-multi-select"
           classNamePrefix="select"
         />
-        <ButtonAdd>Сохранить</ButtonAdd>
+        <ButtonAdd>Save</ButtonAdd>
       </Form>
     </React.Fragment>
   );

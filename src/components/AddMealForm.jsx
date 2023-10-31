@@ -106,8 +106,8 @@ function AddMealForm(props) {
   return (
     <React.Fragment>
       <Form onSubmit={handleSubmit}>
-        {props.edit ? <h2>Изменить блюдо #{props.meal.id} ({props.meal.name})</h2> : <h2>Добавить новое блюдо</h2>}
-        <Field placeholder='Блюдо' value={name} onChange={(e) => setName(e.target.value)} required/>
+        {props.edit ? <h2>Edit meal #{props.meal.id} ({props.meal.name})</h2> : <h2>Add new meal</h2>}
+        <Field placeholder='Meal' value={name} onChange={(e) => setName(e.target.value)} required/>
         <IngredientsList>
           {products.map((product) =>
             {
@@ -147,7 +147,7 @@ function AddMealForm(props) {
             }
           )}
         </IngredientsList>
-        <ButtonAdd>Сохранить</ButtonAdd>
+        <ButtonAdd>Save</ButtonAdd>
       </Form>
     </React.Fragment>
   );

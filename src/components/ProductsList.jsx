@@ -113,10 +113,10 @@ function ProductsList() {
   return (
     <React.Fragment>
       <Select value={sorting} onChange={(e) => setSorting(e.target.value)}>
-        <option value={SORTING.DATE_DESC}>По дате ↓</option>
-        <option value={SORTING.DATE_ASC}>По дате ↑</option>
-        <option value={SORTING.NAME_DESC}>По названию ↓</option>
-        <option value={SORTING.NAME_ASC}>По названию ↑</option>
+        <option value={SORTING.DATE_DESC}>By date ↓</option>
+        <option value={SORTING.DATE_ASC}>By date ↑</option>
+        <option value={SORTING.NAME_DESC}>By name ↓</option>
+        <option value={SORTING.NAME_ASC}>By name ↑</option>
       </Select>
       {[...products].sort((a,b)=>{
         switch (sorting) {
@@ -134,13 +134,13 @@ function ProductsList() {
       }).map((product) => {
         return <Product key={product.id}>
           <div><small>#{product.id}</small> {product.name} date {product.timeCreate}</div>
-          <Amount>{product.amount}&nbsp;{product.unit !== 'неисчисляемое' ? product.unit : ''}</Amount>
-          <Available>{product.amount ? 'Есть' : 'Нет'}</Available>
+          <Amount>{product.amount}&nbsp;{product.unit !== 'uncountable' ? product.unit : ''}</Amount>
+          <Available>{product.amount ? 'Yes' : 'No'}</Available>
           <ButtonEdit type='button' onClick={()=> handleEdit(product)}>✏️</ButtonEdit>
           <ButtonDelete type='button' onClick={()=> handleDelete(product.id)}>x</ButtonDelete>
         </Product>
       })}
-      <ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>
+      <ButtonAdd type='button' onClick={handleAdd}>Add +</ButtonAdd>
       {addFormOpen && <Modal handleClose={handleClose}><AddProductForm/></Modal>}
       {editFormOpen.open && <Modal handleClose={handleClose}><EditProductForm key={editFormOpen.product.id} product={editFormOpen.product}/></Modal>}
     </React.Fragment>

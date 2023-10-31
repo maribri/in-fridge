@@ -6,8 +6,8 @@ import {remove} from '../features/meals/mealsSlice';
 import AddPlanForm from './AddPlanForm';
 import Modal from './Modal';
 import {DAYS, MONTHS } from '../app/constants';
-import DayPicker from "react-day-picker";
-import "react-day-picker/lib/style.css";
+import {DayPicker} from "react-day-picker";
+import "react-day-picker/src/style.css";
 import AddMealForm from "./AddMealForm";
 
 const PlannerNav = styled.div`
@@ -191,7 +191,7 @@ function Planner() {
     <React.Fragment>
       <PlannerNav>
         <PlannerNavButton onClick={goWeekPrev}><ArrowLeft size={20} /></PlannerNavButton>
-        &nbsp;Неделя&nbsp;
+        &nbsp;Week&nbsp;
         <PlannerNavButton onClick={goWeekNext}><ArrowRight size={20} /></PlannerNavButton>
       </PlannerNav>
 
@@ -215,7 +215,7 @@ function Planner() {
                   <ButtonDelete type='button' onClick={()=> handleDelete()}><Delete size={14} />️</ButtonDelete>
                 </Set>)}
               {/*<Set>
-                <SetName>ужин</SetName>
+                <SetName>dinner</SetName>
                 <MealsAdded>
                   <Meal>meal 1</Meal>
                   <Meal>meal 2</Meal>

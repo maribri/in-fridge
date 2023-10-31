@@ -23,12 +23,12 @@ function TopMenu() {
   return (
     <MenuNav>
       <MenuList>
-        <li><MenuLink to="/">Продукты</MenuLink></li>
-        <li><MenuLink to="/meals">Блюда</MenuLink></li>
-        <li><MenuLink to="/planner">Планировщик</MenuLink></li>
-        <li><MenuLink to="/shopping-list">Список покупок</MenuLink></li>
+        <li><MenuLink to="/">Food</MenuLink></li>
+        <li><MenuLink to="/meals">Meals</MenuLink></li>
+        <li><MenuLink to="/planner">Planner</MenuLink></li>
+        <li><MenuLink to="/shopping-list">Shopping-list</MenuLink></li>
       </MenuList>
-      {/*<ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>*/}
+      {/*<ButtonAdd type='button' onClick={handleAdd}>Add +</ButtonAdd>*/}
     </MenuNav>
   );
 }

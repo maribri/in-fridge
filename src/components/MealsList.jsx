@@ -117,10 +117,10 @@ function MealsList() {
   return (
     <React.Fragment>
       <Select value={sorting} onChange={(e) => setSorting(e.target.value)}>
-        <option value={SORTING.DATE_DESC}>По дате ↓</option>
-        <option value={SORTING.DATE_ASC}>По дате ↑</option>
-        <option value={SORTING.NAME_DESC}>По названию ↓</option>
-        <option value={SORTING.NAME_ASC}>По названию ↑</option>
+        <option value={SORTING.DATE_DESC}>By date ↓</option>
+        <option value={SORTING.DATE_ASC}>By date ↑</option>
+        <option value={SORTING.NAME_DESC}>By name ↓</option>
+        <option value={SORTING.NAME_ASC}>By name ↑</option>
       </Select>
       {[...meals].sort((a,b)=>{
         switch (sorting) {
@@ -146,7 +146,7 @@ function MealsList() {
           <ButtonDelete type='button' onClick={()=> handleDelete(meal.id)}>x</ButtonDelete>
         </Meal>
       })}
-      <ButtonAdd type='button' onClick={handleAdd}>Добавить +</ButtonAdd>
+      <ButtonAdd type='button' onClick={handleAdd}>Add +</ButtonAdd>
       {addFormOpen && <Modal handleClose={handleClose}><AddMealForm/></Modal>}
       {editFormOpen.open && <Modal handleClose={handleClose}><AddMealForm edit={true} key={editFormOpen.meal.id} meal={editFormOpen.meal}/></Modal>}
     </React.Fragment>
@@ -156,7 +156,13 @@ function MealsList() {
 function MealProduct(props) {
   return (
     <li>
-      <small>#{props.product.id}</small> {props.product.name} x {props.requiredAmount}&nbsp;{props.product.unit}
+      {props.product ? (
+        <>
+          <small>#{props.product.id}</small> {props.product.name} x {props.requiredAmount}&nbsp;{props.product.unit}
+        </>
+      ) : (
+        'Loading...'
+      )}
     </li>
   );
 }
